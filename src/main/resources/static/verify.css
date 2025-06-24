@@ -66,3 +66,23 @@ hr {
     border-left-color: #4caf50;
     background-color: #e8f5e9;
 }
+
+table {
+    border-collapse: separate;
+    border-spacing: 0 30px;
+}
+
+table td {
+    padding: 12px 8px;
+    vertical-align: top;
+    border-bottom: 1px solid #ddd;
+}
+
+table tr:last-child td {
+    border-bottom: none;
+}
+
+table td strong {
+    display: inline-block;
+    width: 200px;
+}

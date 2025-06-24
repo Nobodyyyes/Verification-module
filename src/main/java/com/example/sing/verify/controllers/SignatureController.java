@@ -18,20 +18,25 @@ import java.io.IOException;
 import java.security.cert.CertificateException;
 
 @Controller
-@RequestMapping("/signature-record")
+@RequestMapping("/signature")
 @RequiredArgsConstructor
-public class SignatureRecordController {
+public class SignatureController {
 
     private final SignatureRecordService signatureRecordService;
 
     private final PKCS7SignatureService pkcs7SignatureService;
 
-    @GetMapping
-    public String home() {
-        return "verify";
+    @GetMapping("/generate")
+    public String showGeneratePage() {
+        return "generate-signature";
     }
 
-    @PostMapping("/generate-signature")
+    @GetMapping("/verify")
+    public String showVerifyPage() {
+        return "verify-signature";
+    }
+
+    @PostMapping("/generate")
     public ResponseEntity<byte[]> generateSignatureFromPdf(@RequestParam("file") MultipartFile file) throws Exception {
         byte[] fileBytes = file.getBytes();
 
@@ -59,6 +64,6 @@ public class SignatureRecordController {
 
         model.addAttribute("verifyResponse", response);
         model.addAttribute("fileName", file.getOriginalFilename());
-        return "verify";
+        return "verify-signature";
     }
 }

@@ -9,7 +9,7 @@
 
 <h1>Проверка электронной подписи</h1>
 
-<form th:action="@{/signature-record/verify}" method="post" enctype="multipart/form-data">
+<form th:action="@{/signature/verify}" method="post" enctype="multipart/form-data">
     <label>Оригинальный файл (PDF, DOCX, XML):</label><br/>
     <input type="file" name="file" required/><br/><br/>
 
@@ -24,6 +24,8 @@
     <button type="submit">Проверить подпись</button>
 </form>
 
+<hr/>
+
 <div th:if="${verifyResponse != null}"
      th:classappend="${verifyResponse.isValid} ? 'verification-result valid' : 'verification-result invalid'">
 
@@ -36,15 +38,7 @@
 
 <hr/>
 
-<h2>Сгенерировать подпись PDF</h2>
-
-<form action="/signature-record/generate-signature" method="post" enctype="multipart/form-data" target="signFrame">
-    <label>Выберите PDF-файл:</label><br/>
-    <input type="file" name="file" accept=".pdf" required/><br/><br/>
-    <button type="submit">Сгенерировать подпись</button>
-</form>
-
-<iframe name="signFrame" style="display:none;"></iframe>
+<a th:href="@{/}">Назад</a>
 
 </body>
 </html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Информация о сертификате</title>
+    <link rel="stylesheet" th:href="@{/verify.css}"/>
+</head>
+<body>
+
+<h1>Информация о сертификате</h1>
+
+<form th:action="@{/certificate/info}" method="post" enctype="multipart/form-data">
+    <label>Загрузите файл подписи (.p7s):</label><br/>
+    <input type="file" name="signature" accept=".p7s" required/><br/><br/>
+    <button type="submit">Показать информацию</button>
+</form>
+
+<hr/>
+
+<div th:if="${certInfo != null}">
+    <table id="cert-info">
+        <tr>
+            <td><strong>Подписант (Subject):</strong></td>
+            <td th:text="${certInfo.subject}">-</td>
+        </tr>
+        <tr>
+            <td><strong>Издатель (Issuer):</strong></td>
+            <td th:text="${certInfo.issuer}">-</td>
+        </tr>
+        <tr>
+            <td><strong>Валиден с:</strong></td>
+            <td th:text="${certInfo.validFrom}">-</td>
+        </tr>
+        <tr>
+            <td><strong>Валиден до:</strong></td>
+            <td th:text="${certInfo.validTo}">-</td>
+        </tr>
+        <tr>
+            <td><strong>Серийный номер:</strong></td>
+            <td th:text="${certInfo.serialNumber}">-</td>
+        </tr>
+        <tr>
+            <td><strong>Алгоритм подписи:</strong></td>
+            <td th:text="${certInfo.signatureAlgorithm}">-</td>
+        </tr>
+        <tr>
+            <td><strong>Алгоритм ключа:</strong></td>
+            <td th:text="${certInfo.publicKeyAlgorithm}">-</td>
+        </tr>
+        <tr>
+            <td><strong>Назначения ключа (Key Usage):</strong></td>
+            <td>
+                <ul>
+                    <li th:each="usage : ${certInfo.keyUsage}" th:text="${usage}">-</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Доп. назначения (Extended Key Usage):</strong></td>
+            <td>
+                <ul>
+                    <li th:each="ekusage : ${certInfo.extendedKeyUsage}" th:text="${ekusage}">-</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Альтернативные имена:</strong></td>
+            <td>
+                <ul>
+                    <li th:each="alt : ${certInfo.subjectAlternativeNames}" th:text="${alt}">-</li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<hr/>
+
+<a th:href="@{/}">Назад</a>
+
+</body>
+</html>

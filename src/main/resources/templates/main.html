@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+    <link rel="stylesheet" th:href="@{/main.css}" />
+</head>
+<body>
+
+<div class="container">
+    <nav class="sidebar">
+        <h2>Меню</h2>
+        <ul>
+            <li><a th:href="@{/}">🏠 Главная</a></li>
+            <li><a th:href="@{/signature/verify}">📄 Проверка подписи</a></li>
+            <li><a th:href="@{/signature/generate}">📄 Генерация подписи</a></li>
+            <li><a th:href="@{/certificate/info}">📄 Информация о сертификате </a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>Добро пожаловать в систему ЭЦП</h1>
+        <p>Используйте меню слева для навигации.</p>
+    </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Проверка ЭЦП</title>
+    <link rel="stylesheet" th:href="@{/verify.css}"/>
+</head>
+<body>
+
+<h1>Проверка электронной подписи</h1>
+
+<form th:action="@{/signature-record/verify}" method="post" enctype="multipart/form-data">
+    <label>Оригинальный файл (PDF, DOCX, XML):</label><br/>
+    <input type="file" name="file" required/><br/><br/>
+
+    <label>Файл подписи (.p7s):</label><br/>
+    <input type="file" name="signature" required/><br/><br/>
+
+    <label>
+        <input type="checkbox" name="save" value="true"/>
+        Сохранить результат
+    </label> <br/><br>
+
+    <button type="submit">Проверить подпись</button>
+</form>
+
+<div th:if="${verifyResponse != null}"
+     th:classappend="${verifyResponse.isValid} ? 'verification-result valid' : 'verification-result invalid'">
+
+    <h2>Результат проверки</h2>
+    <p><strong>Файл:</strong> <span th:text="${fileName}"></span></p>
+    <p><strong>Действительна:</strong> <span th:text="${verifyResponse.isValid ? 'Да' : 'Нет'}"></span></p>
+    <p><strong>Подписант:</strong> <span th:text="${verifyResponse.signer}"></span></p>
+    <p><strong>Комментарий:</strong> <span th:text="${verifyResponse.reason}"></span></p>
+</div>
+
+<hr/>
+
+<h2>Сгенерировать подпись PDF</h2>
+
+<form action="/signature-record/generate-signature" method="post" enctype="multipart/form-data" target="signFrame">
+    <label>Выберите PDF-файл:</label><br/>
+    <input type="file" name="file" accept=".pdf" required/><br/><br/>
+    <button type="submit">Сгенерировать подпись</button>
+</form>
+
+<iframe name="signFrame" style="display:none;"></iframe>
+
+</body>
+</html>

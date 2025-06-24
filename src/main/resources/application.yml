@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: sign-verify
+
+  profiles:
+    include: datasource
+
+logging:
+  level:
+    org.hibernate: error

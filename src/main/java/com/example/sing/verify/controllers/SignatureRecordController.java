@@ -1,0 +1,64 @@
+package com.example.sing.verify.controllers;
+
+import com.example.sing.verify.domain.models.VerifyResponse;
+import com.example.sing.verify.services.PKCS7SignatureService;
+import com.example.sing.verify.services.SignatureRecordService;
+import lombok.RequiredArgsConstructor;
+import org.bouncycastle.cms.CMSException;
+import org.springframework.http.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.security.cert.CertificateException;
+
+@Controller
+@RequestMapping("/signature-record")
+@RequiredArgsConstructor
+public class SignatureRecordController {
+
+    private final SignatureRecordService signatureRecordService;
+
+    private final PKCS7SignatureService pkcs7SignatureService;
+
+    @GetMapping
+    public String home() {
+        return "verify";
+    }
+
+    @PostMapping("/generate-signature")
+    public ResponseEntity<byte[]> generateSignatureFromPdf(@RequestParam("file") MultipartFile file) throws Exception {
+        byte[] fileBytes = file.getBytes();
+
+        byte[] signature = pkcs7SignatureService.generatePKCS7Signature(fileBytes);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDisposition(ContentDisposition.attachment()
+                .filename(file.getOriginalFilename() + ".p7s")
+                .build());
+
+        return new ResponseEntity<>(signature, headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/verify")
+    public String verifySignature(@RequestParam("file") MultipartFile file,
+                                  @RequestParam("signature") MultipartFile signature,
+                                  @RequestParam(name = "save", required = false) String saveFlag,
+                                  Model model) throws IOException, CertificateException, CMSException {
+        boolean save = "true".equalsIgnoreCase(saveFlag);
+
+        VerifyResponse response = save
+                ? signatureRecordService.verifyAndStore(file.getName(), file.getBytes(), signature.getBytes())
+                : signatureRecordService.verify(file.getBytes(), signature.getBytes());
+
+        model.addAttribute("verifyResponse", response);
+        model.addAttribute("fileName", file.getOriginalFilename());
+        return "verify";
+    }
+}

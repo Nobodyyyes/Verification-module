@@ -9,10 +9,32 @@
 
 <h1>Генерация подписи</h1>
 
-<form action="/signature/generate" method="post" enctype="multipart/form-data" target="signFrame">
-    <label>Выберите PDF-файл:</label><br/>
-    <input type="file" name="file" accept=".pdf" required/><br/><br/>
-    <button type="submit">Сгенерировать подпись</button>
+<form action="/signature/generate" method="post" enctype="multipart/form-data">
+    <label>Файл PDF:</label><input type="file" name="file" required><br>
+    <label>ФИО (CN):</label><label>
+    <input type="text" name="subjectCN" required>
+</label><br>
+    <label>Организация (O):</label><label>
+    <input type="text" name="organization" required>
+</label><br>
+    <label>Страна (C):</label><label>
+    <input type="text" name="country" value="KG">
+</label><br>
+    <label>Дата начала:</label><label>
+    <input type="date" name="validFrom">
+</label><br>
+    <label>Дата окончания:</label><label>
+    <input type="date" name="validTo">
+</label><br>
+    <label>Размер ключа:</label>
+    <label>
+        <select name="keySize">
+            <option value="2048">2048</option>
+            <option value="3072">3072</option>
+            <option value="4096">4096</option>
+        </select>
+    </label><br>
+    <button type="submit">Сгенерировать</button>
 </form>
 
 <iframe name="signFrame" style="display:none;"></iframe>

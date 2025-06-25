@@ -1,10 +1,12 @@
 package com.example.sing.verify.controllers;
 
+import com.example.sing.verify.domain.models.SignatureRequest;
 import com.example.sing.verify.domain.models.VerifyResponse;
 import com.example.sing.verify.services.PKCS7SignatureService;
 import com.example.sing.verify.services.SignatureRecordService;
 import lombok.RequiredArgsConstructor;
 import org.bouncycastle.cms.CMSException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.cert.CertificateException;
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/signature")
@@ -37,10 +40,23 @@ public class SignatureController {
     }
 
     @PostMapping("/generate")
-    public ResponseEntity<byte[]> generateSignatureFromPdf(@RequestParam("file") MultipartFile file) throws Exception {
-        byte[] fileBytes = file.getBytes();
+    public ResponseEntity<byte[]> generateSignatureFromPdf(@RequestParam("file") MultipartFile file,
+                                                           @RequestParam String subjectCN,
+                                                           @RequestParam String organization,
+                                                           @RequestParam(defaultValue = "KG") String country,
+                                                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validFrom,
+                                                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validTo,
+                                                           @RequestParam(defaultValue = "2048") int keySize) throws Exception {
+        SignatureRequest request = new SignatureRequest()
+                .setData(file.getBytes())
+                .setSubjectCN(subjectCN)
+                .setOrganization(organization)
+                .setCountry(country)
+                .setValidFrom(validFrom)
+                .setValidTo(validTo)
+                .setKeySize(keySize);
 
-        byte[] signature = pkcs7SignatureService.generatePKCS7Signature(fileBytes);
+        byte[] signature = pkcs7SignatureService.generatePKCS7Signature(request);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
